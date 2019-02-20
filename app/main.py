@@ -2,8 +2,10 @@ import json
 import os
 import random
 import bottle
+import argparse
 
 from api import ping_response, start_response, move_response, end_response
+from subprocess import Popen, PIPE
 
 @bottle.route('/')
 def index():
@@ -39,7 +41,7 @@ def start():
             initialize your snake state here using the
             request's data if necessary.
     """
-    print(json.dumps(data))
+    print(json.dumps(data, indent=4))
 
     color = "#00FF00"
 
@@ -54,7 +56,7 @@ def move():
     TODO: Using the data from the endpoint request object, your
             snake AI must choose a direction to move in.
     """
-    print(json.dumps(data))
+    print(json.dumps(data, indent=4))
 
     directions = ['up', 'down', 'left', 'right']
     direction = random.choice(directions)
@@ -70,7 +72,7 @@ def end():
     TODO: If your snake AI was stateful,
         clean up any stateful objects here.
     """
-    print(json.dumps(data))
+    print(json.dumps(data, indent=4))
 
     return end_response()
 
@@ -78,9 +80,23 @@ def end():
 application = bottle.default_app()
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    
+    
+
+    subparsers = parser.add_subparsers()
+    start_parser = subparsers.add_subparsers('start')
+    start_parser.
+
+    parser.add_argument('--port', default=os.getenv('PORT', '8080'), type=str)
+    parser.add_argument('--ip', default=os.getenv('IP', '0.0.0.0'), type=str)
+    parser.add_argument('--debug', action='store_true')
+
+    kwargs = vars(parser.parse_args())
+
     bottle.run(
         application,
-        host=os.getenv('IP', '0.0.0.0'),
-        port=os.getenv('PORT', '8080'),
-        debug=os.getenv('DEBUG', True)
+        host=kwargs['ip'],
+        port=kwargs['port'],
+        debug=kwargs['debug']
     )
